@@ -42,10 +42,28 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/myToys", async (req, res) => {
+      console.log(req.query.sellerEmail);
+
+      let query = {};
+      if (req.query?.sellerEmail) {
+        query = { sellerEmail: req.query.sellerEmail };
+      }
+      const result = await animalToysCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/toys", async (req, res) => {
       const body = req.body;
       console.log(body);
       const result = await animalToysCollection.insertOne(body);
+      res.send(result);
+    });
+
+    app.delete("/myToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await animalToysCollection.deleteOne(query);
       res.send(result);
     });
 
