@@ -32,7 +32,7 @@ async function run() {
       .collection("animalToys");
 
     app.get("/allToys", async (req, res) => {
-      const result = await animalToysCollection.find().toArray();
+      const result = await animalToysCollection.find().limit(20).toArray();
       res.send(result);
     });
     app.get("/allToys/:id", async (req, res) => {
@@ -50,6 +50,17 @@ async function run() {
         query = { sellerEmail: req.query.sellerEmail };
       }
       const result = await animalToysCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // search api
+    app.get("/searchToyName/:text", async (req, res) => {
+      const searchText = req.params.text;
+      const result = await animalToysCollection
+        .find({
+          $or: [{ toyName: { $regex: searchText, $options: "i" } }],
+        })
+        .toArray();
       res.send(result);
     });
 
