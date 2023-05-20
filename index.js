@@ -31,6 +31,11 @@ async function run() {
       .db("animalToysDB")
       .collection("animalToys");
 
+    app.get("/allToys", async (req, res) => {
+      const result = await animalToysCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/toys", async (req, res) => {
       const body = req.body;
       console.log(body);
