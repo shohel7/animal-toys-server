@@ -53,6 +53,17 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/subCategory", async (req, res) => {
+      // console.log(req.query.subCategory);
+
+      let query = {};
+      if (req.query?.subCategory) {
+        query = { subCategory: req.query.subCategory };
+      }
+      const result = await animalToysCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // search api
     app.get("/searchToyName/:text", async (req, res) => {
       const searchText = req.params.text;
@@ -60,6 +71,25 @@ async function run() {
         .find({
           $or: [{ toyName: { $regex: searchText, $options: "i" } }],
         })
+        .toArray();
+      res.send(result);
+    });
+
+    // sorting api
+    app.get("/myAllToys", async (req, res) => {
+      // console.log(req.query.sort);
+      const selectedOption = req.query.sort;
+      let sortOption = {};
+
+      if (selectedOption === "asc") {
+        sortOption = { price: 1 }; // Sort by price ascending
+      } else if (selectedOption === "desc") {
+        sortOption = { price: -1 }; // Sort by price descending
+      }
+
+      const result = await animalToysCollection
+        .find()
+        .sort(sortOption)
         .toArray();
       res.send(result);
     });
